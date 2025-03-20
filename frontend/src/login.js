@@ -1,45 +1,71 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { useState } from "react";
 
 export default function Login(){
+  const [showPassword, setShowPassword] = useState(false);
+
     return(
-      <div className ="bg-slate-900" >
-      <div>
-      <h1 className="text-white font-bold text-3xl">Gratigator</h1>
-      </div>
-      <div className="min-h-screen min-w-full flex bg-slate-900 items-center justify-center">
+      <div className ="min-h-screen min-w-full flex flex-col bg-slate-900 items-center justify-center">
+      <div className="inline-flex h-36 w-36 rounded-full mb-7 bg-emerald-500"></div>
 
-        <div>
-        <div className="text-center -translate-y-16">
-          <div className="w-36 h-36 bg-teal-600 inline-block rounded-full pt-14 translate-y-14  relative"> 
-            placeholder :3
+      <div className="min-w-full flex items-center justify-center">        
+        {/* loading in google icons */}        
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"></link>
+
+        <div className="text-center">
+          <h1 className="instrument-serif-regular font-bold text-4xl text-emerald-300">
+            Log-in
+          </h1>
+
+          <form>
+          <div className='bg-slate-800 px-1 rounded-md mt-5 w-80 text-left flex items-center'>
+            <span class="material-icons md-light m-1 md-18 py-1">
+              person
+            </span>            
+            <input placeholder="username or email" className='px-2 bg-slate-800 text-white outline-none w-full'  />
           </div>
-          
-          <div className="bg-slate-800 px-4 rounded-lg pb-5 text-center"> 
-            
-            <h1 className= "text-white pt-24 text-center text-2xl font-black">
-            Login
-            </h1>
-
-            <div className="w-72 mt-5">
-              <input type="text" id="username" name="username" placeholder="username or email" className='block w-full rounded-md px-2 py-0.5'></input>
-              <input type="password" name="password" placeholder="enter your password" className='block w-full mt-2 rounded-md px-2 py-0.5'></input>
-            </div>
-
-            <a href="/">
-              <button className="bg-emerald-900 py-1 px-10 rounded-full mt-5 border-2 border-emerald-600 text-white font-bold">
-                Sign-in
-              </button>
-            </a>
-          </div>  
+          <div className='bg-slate-800 px-1 rounded-md mt-3 w-80 text-left flex items-center'>
+            <span class="material-icons md-light m-1 md-18 py-1">
+              key
+            </span>                        
+            <input 
+              type={showPassword ? "text" : "password"} 
+              placeholder="password" 
+              className="px-2 w-64 bg-slate-800 text-white outline-none" 
+            />
+            <span 
+              className="material-icons md-light m-1 md-18 py-1 cursor-pointer" 
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? "visibility_off" : "visibility"}
+            </span>
           </div>
-          <a href="/" className="text-teal-50 text-center flex justify-center -translate-y-12">
-              No account? Register.
-            </a>
 
-        </div>
-        
+          <p className='mt-3'>
+            <a href="/" className="noto-sans text-emerald-500 text-sm underline"> 
+              forgot password?
+            </a>
+          </p>
+
+
+          <div className='h-20'>
+          <button className="mt-3 p-1 px-8 bg-emerald-500 rounded-full text-slate-950 font-bold border-slate-950 border-2 
+            hover:px-10 hover:py-2 hover:bg-slate-900 hover:border-emerald-500 hover:border-2 hover:transition-all hover:text-emerald-500 
+            active:bg-emerald-500 active:transition-all" >
+              Log-in
+          </button>
+
+          </div>
+            <p className=' text-white text-sm'>No account? <a href="/" className="text-emerald-500 text-sm underline"> Register</a></p>
+
+          </form>
+
+
+        </div>  
+
       </div>
       </div>
+
       )
   };
