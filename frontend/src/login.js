@@ -4,7 +4,6 @@ import { useState } from "react";
 
 export default function Login(){
   const [showPassword, setShowPassword] = useState(false);
-
     return(
       <div className ="min-h-screen min-w-full flex flex-col bg-slate-900 items-center justify-center">
       <div className="inline-flex h-36 w-36 rounded-full mb-7 bg-emerald-500"></div>
@@ -57,7 +56,7 @@ export default function Login(){
           </button>
 
           </div>
-            <p className=' text-white text-sm'>No account? <a href="/" className="text-emerald-500 text-sm underline"> Register</a></p>
+            <p className=' text-white text-sm'>No account? <a href="/register" className="text-emerald-500 text-sm underline"> Register</a></p>
 
           </form>
 
@@ -68,4 +67,5 @@ export default function Login(){
       </div>
 
       )
-  };
+};
+

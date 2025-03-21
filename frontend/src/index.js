@@ -4,12 +4,16 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 import Login from './login';
+import Register from './register';
 
 export default function Home(){
   return(
     <div> 
       <p>Gratigator</p>
-      <a href="./login" >Login or create an account</a>
+      <a href="./login" >Login </a>
+      <p>
+      <a href="./register"> create an account</a>
+        </p><a href="./register"> create an account</a>
     </div>  
     )
 };
@@ -20,6 +24,8 @@ root.render(
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+
     </Routes>
   </Router>
 );
