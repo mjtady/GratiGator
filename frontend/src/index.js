@@ -5,6 +5,7 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 import Login from './login';
 import Register from './register';
+import Dashboard from './dashboard';
 
 export default function Home(){
   return(
@@ -13,7 +14,10 @@ export default function Home(){
       <a href="./login" >Login </a>
       <p>
       <a href="./register"> create an account</a>
-        </p><a href="./register"> create an account</a>
+      </p>
+      <p>
+      <a href="./dashboard"> dashboard</a>
+      </p>
     </div>  
     )
 };
@@ -25,6 +29,8 @@ root.render(
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/Dashboard" element={<Dashboard />} />
+
 
     </Routes>
   </Router>
