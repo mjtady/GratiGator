@@ -11,18 +11,45 @@ function RegistrationForm() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [birthDate, setBirthDate] = useState('');
+  const [userId, setUserId] = useState(null);
 
-  const handleEmailSubmit = (e) => {
+  const handleEmailSubmit = async (e) => {
     e.preventDefault();
     // Here you would send the email and request a verification code
-    setShowVerification(true);
+    const response = await fetch('/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type' : 'application/json',
+        'X-CSRFToken' : getCSRF('csrftoken'),
+      },
+      body: JSON.stringify({email}),});
+      const data = await response.json();
+      if(data.success) {
+        setUserId(data.user_id);
+        setShowVerification(true)
+      } else {
+        alert(data.error)
+      }
   };
 
-  const handleVerificationSubmit = (e) => {
+  const handleVerificationSubmit = async (e) => {
     e.preventDefault();
     // Handle verification code submission (mock verification for now)
+    const response = await fetch('/verify_email/', {
+      method: 'POST',
+      headers: {
+        'Content-Type' : 'application/json',
+        'X-CSRFToken' : getCSRF('csrftoken'),
+      },
+      body: JSON.stringify({user_id : userId, verification_code: verificationCode}),
+    });
     console.log('Verifying code:', verificationCode);
-    setIsVerified(true);
+    const data = await response.json();
+    if (data.success){
+      setIsVerified(true);
+    } else {
+      alert(data.error);
+    }
   };
 
   return (
@@ -187,3 +214,21 @@ function RegistrationForm() {
 }
 
 export default RegistrationForm;
+
+// helper function to get the CSRF token for the handler functions to utilize
+// https://gist.github.com/sirodoht/fb7a6e98d33fc460d4f1eadaff486e7b
+// https://docs.djangoproject.com/en/5.1/howto/csrf/
+function getCSRF(name){
+  let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
