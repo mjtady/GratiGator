@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+
 
 function RegistrationForm() {
   const [email, setEmail] = useState('');
@@ -62,7 +64,7 @@ function RegistrationForm() {
             </button>
             <p className='text-white text-sm mt-3'>
               Do you have a Gratigator account? 
-              <a href="/login" className="text-emerald-500 text-sm underline"> Log-in</a>
+              <Link to="/login" className="text-emerald-500 text-sm underline"> Log-in</Link>
             </p>
           </form>
         </>
@@ -165,6 +167,7 @@ function RegistrationForm() {
               />
             </div>
         </div>
+        <Link to="/dashboard">
             <div className='text-center'>
                 <button 
                 className="mt-5 p-1 px-8 bg-emerald-500 rounded-full text-slate-950 font-bold border-slate-950 border-2
@@ -175,6 +178,7 @@ function RegistrationForm() {
                 Create your account!
                 </button>
             </div>
+            </Link>
           </div>
         </div>
       )}
