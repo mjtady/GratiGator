@@ -6,7 +6,10 @@ import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSa
 export default function Dashboard() {
   var username = "USER"
   
-    const [currentDate, setCurrentDate] = useState(new Date());
+  const [isOpen, setIsOpen] = useState(false);
+
+
+  const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(null);
   
   const startDate = startOfWeek(startOfMonth(currentDate));
@@ -35,10 +38,48 @@ export default function Dashboard() {
     <p className="text-left text-white">
         Let's continue to work on a positive mindset today!
         </p>
-    <button className="text-green-400 noto-sans mt-4 p-1 px-4 rounded-full border border-green-400 transition-all duration-150
-    hover:bg-green-400 hover:text-slate-900 hover:font-bold active:bg-slate-950 active:text-slate-950 active:border-slate-950">
-        Let's Journal!
-        </button>
+        <a>
+          <button 
+          onClick={() => setIsOpen(true)}
+
+          className="text-green-400 noto-sans mt-4 p-1 px-4 rounded-full border border-green-400 transition-all duration-150
+        hover:bg-green-400 hover:text-slate-900 hover:font-bold active:bg-slate-950 active:text-slate-950 active:border-slate-950">
+          Let's Journal!
+          </button>
+        </a>
+      {isOpen && (
+        // journaling prompting
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-slate-200 p-6 rounded-sm shadow-lg w-96 text-center relative">
+            <h1 className="text-2xl font-semibold instrument-serif-regular text-emerald-800 text-left">
+              What are you grateful for today? </h1>
+              <p className="text-left text-sm mb-2">
+              (Ideas?)
+
+              </p>
+            <textarea
+              placeholder="Think about the good things today. Don't be afraid of how big or small."
+              className="w-full resize-y p-2 border rounded-md max-h-full overflow-auto h-96 playpen-sans
+              focus:outline-dashed focus:outline-1 focus:outline-emerald-700"
+            ></textarea>
+            <div className="mt-4 flex justify-center gap-4">
+              <button
+                onClick={() => setIsOpen(false)}
+                className="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => setIsOpen(false)}
+                className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 hover:underline-offset-4 hover:underline"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
 </div>
 <div className='mt-5 bg-slate-800 h-1 w-full'></div>
 <div className='inline-block w-8/12 text-left'>
@@ -129,26 +170,3 @@ export default function Dashboard() {
 
   );
 }
-
-
-  // export default function Dashboard(){
-//     var username = "Anthony";
-
-//     return(
-//     <div className="bg-slate-900 min-w-full min-h-screen text-center">
-//         <div className='inline-block w-8/12 text-left'>
-//         <h1 className="instrument-serif-regular font-bold text-4xl text-emerald-300 pt-10 text-left">
-//             Hello {username} ! </h1>
-//             <p className="text-left text-white">Lets maintain your daily journaling streak!</p>
-//             <button className="bg-green-400">Let's Journal!</button>
-//         </div>
-//         <div className='mt-5 bg-slate-800 h-1 w-full'></div>
-//         <div className='inline-block w-8/12 text-left'>
-//         <h1 className="instrument-serif-regular font-bold text-4xl text-emerald-300 pt-10 text-left">
-//             Your Past Entries: </h1>
-
-//         </div>
-
-//     </div>
-//     )
-// }

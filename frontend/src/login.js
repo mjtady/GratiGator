@@ -1,6 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { Link } from 'react-router-dom';
 import { useState } from "react";
+import Dashboard from './dashboard';
+
 
 export default function Login(){
   const [showPassword, setShowPassword] = useState(false);
@@ -49,14 +52,16 @@ export default function Login(){
 
 
           <div className='h-20'>
-          <button className="mt-3 p-1 px-8 bg-emerald-500 rounded-full text-slate-950 font-bold border-slate-950 border-2 
-            hover:px-10 hover:py-2 hover:bg-slate-900 hover:border-emerald-500 hover:border-2 hover:transition-all hover:text-emerald-500 
-            active:bg-emerald-500 active:transition-all" >
-              Log-in
-          </button>
+          <Link to="/dashboard">
+            <button className="mt-3 p-1 px-8 bg-emerald-500 rounded-full text-slate-950 font-bold border-slate-950 border-2 
+              hover:px-10 hover:py-2 hover:bg-slate-900 hover:border-emerald-500 hover:border-2 hover:transition-all hover:text-emerald-500 
+              active:bg-emerald-500 active:transition-all" >
+                Log-in
+            </button>
+          </Link>
 
           </div>
-            <p className=' text-white text-sm'>No account? <a href="/register" className="text-emerald-500 text-sm underline"> Register</a></p>
+            <p className=' text-white text-sm'>No account? <Link to="/register" className="text-emerald-500 text-sm underline"> Register</Link></p>
 
           </form>
 
