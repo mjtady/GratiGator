@@ -19,10 +19,21 @@ def register(request):
             email = form.cleaned_data['email']
             if not email.endswith('@ufl.edu'):
                 return render(request, 'register.html' , {'form' : form, 'error' : 'Only @ufl.edu emails are allowed.'})
-            if JournalUser.objects.filter(uflemail = email).exists(): # https://www.geeksforgeeks.org/filter-in-python/
+            if JournalUser.objects.filter(email = email).exists(): # https://www.geeksforgeeks.org/filter-in-python/
                 return render(request, 'register.html', {'form': form, 'error': 'Email already registered.'})
             
             verification_code = generate_verification_code()
+
+            user = JournalUser.objects.create_user(
+                username = email,
+                email = email,
+                is_verified = False,
+                verification_code = verification_code
+            )
+
+            user.set_unusable_password()
+            user.save()
+            
             send_mail(
                 'Gratigator Email Verification', 
                 f'Your verification code is: {verification_code}',
@@ -30,15 +41,7 @@ def register(request):
                 [email],
                 fail_silently = False,
             )
-            user = JournalUser.objects.create_user(
-                username = email,
-                uflemail = email,
-                is_verified = False,
-                verification_code = verification_code
-            )
-            user.set_unusable_password()
-            user.save()
-
+            
         return JsonResponse({'success': True, 'user_id': user.id})
     return JsonResponse({'success': False, 'error': 'Invalid request method.'})
 

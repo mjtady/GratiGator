@@ -13,16 +13,34 @@ function RegistrationForm() {
   const [userId, setUserId] = useState(null);
   const [error, setError] = useState('');
 
+  // Helper function to get the CSRF token
+  function getCookies(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    console.log(getCookies('csrftoken'));
+    return cookieValue;
+  }
+
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
     setError(''); // Clear any previous errors
 
     try {
       const response = await fetch('http://localhost:8000/register/', {
+        mode: 'cors',
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRFToken': getCSRF('csrftoken'),
+          'X-CSRFToken': getCookies('csrftoken'),
         },
         body: JSON.stringify({ email }),
       });
@@ -45,10 +63,11 @@ function RegistrationForm() {
 
     try {
       const response = await fetch('http://localhost:8000/verify_email/', {
+        mode: 'cors',
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRFToken': getCSRF('csrftoken'),
+          'X-CSRFToken': getCookies('csrftoken'),
         },
         body: JSON.stringify({ user_id: userId, verification_code: verificationCode }),
       });
@@ -78,7 +97,7 @@ function RegistrationForm() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRFToken': getCSRF('csrftoken'),
+          'X-CSRFToken': getCookies('csrftoken'),
         },
         body: JSON.stringify({
           user_id: userId,
@@ -256,19 +275,3 @@ function RegistrationForm() {
 }
 
 export default RegistrationForm;
-
-// Helper function to get the CSRF token
-function getCSRF(name) {
-  let cookieValue = null;
-  if (document.cookie && document.cookie !== '') {
-    const cookies = document.cookie.split(';');
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].trim();
-      if (cookie.substring(0, name.length + 1) === (name + '=')) {
-        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-        break;
-      }
-    }
-  }
-  return cookieValue;
-}

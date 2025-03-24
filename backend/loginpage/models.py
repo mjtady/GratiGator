@@ -7,7 +7,7 @@ from django.contrib.auth.models import AbstractUser
 
 class JournalUser(AbstractUser):
     email = models.EmailField(unique=True)
-    dob = models.DateField()
+    dob = models.DateField(null=True, blank=True)
     is_verified = models.BooleanField(default=False)
     verification_code = models.CharField(max_length=6, null=True, blank=True)
 
