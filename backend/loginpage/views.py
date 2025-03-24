@@ -59,4 +59,3 @@ def verify_email(request):
             return JsonResponse({'success' : False, 'error' : 'Email does not exist'})
         
     return JsonResponse({'success': False, 'error' : 'Invalid verification method'})
-    

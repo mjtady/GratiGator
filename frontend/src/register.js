@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-
 function RegistrationForm() {
   const [email, setEmail] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
@@ -12,43 +11,92 @@ function RegistrationForm() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [birthDate, setBirthDate] = useState('');
   const [userId, setUserId] = useState(null);
+  const [error, setError] = useState('');
 
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
-    // Here you would send the email and request a verification code
-    const response = await fetch('/register', {
-      method: 'POST',
-      headers: {
-        'Content-Type' : 'application/json',
-        'X-CSRFToken' : getCSRF('csrftoken'),
-      },
-      body: JSON.stringify({email}),});
+    setError(''); // Clear any previous errors
+
+    try {
+      const response = await fetch('http://localhost:8000/register/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCSRF('csrftoken'),
+        },
+        body: JSON.stringify({ email }),
+      });
+
       const data = await response.json();
-      if(data.success) {
+      if (data.success) {
         setUserId(data.user_id);
-        setShowVerification(true)
+        setShowVerification(true);
       } else {
-        alert(data.error)
+        setError(data.error || 'Failed to send verification code.');
       }
+    } catch (err) {
+      setError('Network error. Please try again.');
+    }
   };
 
   const handleVerificationSubmit = async (e) => {
     e.preventDefault();
-    // Handle verification code submission (mock verification for now)
-    const response = await fetch('/verify_email/', {
-      method: 'POST',
-      headers: {
-        'Content-Type' : 'application/json',
-        'X-CSRFToken' : getCSRF('csrftoken'),
-      },
-      body: JSON.stringify({user_id : userId, verification_code: verificationCode}),
-    });
-    console.log('Verifying code:', verificationCode);
-    const data = await response.json();
-    if (data.success){
-      setIsVerified(true);
-    } else {
-      alert(data.error);
+    setError(''); // Clear any previous errors
+
+    try {
+      const response = await fetch('http://localhost:8000/verify_email/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCSRF('csrftoken'),
+        },
+        body: JSON.stringify({ user_id: userId, verification_code: verificationCode }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setIsVerified(true);
+      } else {
+        setError(data.error || 'Invalid verification code.');
+      }
+    } catch (err) {
+      setError('Network error. Please try again.');
+    }
+  };
+
+  const handleFinalRegistration = async (e) => {
+    e.preventDefault();
+    setError(''); // Clear any previous errors
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match.');
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:8000/register/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCSRF('csrftoken'),
+        },
+        body: JSON.stringify({
+          user_id: userId,
+          username,
+          password,
+          dob: birthDate,
+        }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        // Redirect to login or dashboard
+        window.location.href = '/dashboard';
+      } else {
+        setError(data.error || 'Failed to complete registration.');
+      }
+    } catch (err) {
+      setError('Network error. Please try again.');
     }
   };
 
@@ -131,82 +179,76 @@ function RegistrationForm() {
           <h1 className="instrument-serif-regular font-bold text-4xl text-emerald-300 text-center">
             Enter your account details:
           </h1>
-          <div className="w-fit mt-4 text-left">
-            <label className="text-white text-left">
-                Create your username</label>
-            <div className='bg-slate-800 px-1 rounded-md mt-2 w-80 text-left flex items-center'>
-              <span className="material-icons md-light m-1 md-18 py-1">
-                person</span>    
-              <input 
-                className='px-2 bg-slate-800 text-white outline-none w-full'
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
+          <form onSubmit={handleFinalRegistration}>
+            <div className="w-fit mt-4 text-left">
+              <label className="text-white text-left">
+                  Create your username</label>
+              <div className='bg-slate-800 px-1 rounded-md mt-2 w-80 text-left flex items-center'>
+                <span className="material-icons md-light m-1 md-18 py-1">
+                  person</span>    
+                <input 
+                  className='px-2 bg-slate-800 text-white outline-none w-full'
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                />
+              </div>
             </div>
-        <div className='mt-2'>
-            <label className="text-white text-left">
-                Create your password</label>
-            <div className='bg-slate-800 px-1 rounded-md mt-2 w-80 text-left flex items-center'>
-              <span className="material-icons md-light m-1 md-18 py-1">
-                lock</span>    
-              <input 
-                type="password"
-                className='px-2 bg-slate-800 text-white outline-none w-full'
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+            <div className='mt-2'>
+                <label className="text-white text-left">
+                    Create your password</label>
+                <div className='bg-slate-800 px-1 rounded-md mt-2 w-80 text-left flex items-center'>
+                  <span className="material-icons md-light m-1 md-18 py-1">
+                    lock</span>    
+                  <input 
+                    type="password"
+                    className='px-2 bg-slate-800 text-white outline-none w-full'
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                </div>
             </div>
-        </div>
-        <div className='mt-2'>
-            <label className="text-white text-left">Confirm your password</label>
-            <div className='bg-slate-800 px-1 rounded-md mt-2 w-80 text-left flex items-center'>
-              <span className="material-icons md-light m-1 md-18 py-1">lock</span>    
-              <input 
-                type="password"
-                className='px-2 bg-slate-800 text-white outline-none w-full'
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
+            <div className='mt-2'>
+                <label className="text-white text-left">Confirm your password</label>
+                <div className='bg-slate-800 px-1 rounded-md mt-2 w-80 text-left flex items-center'>
+                  <span className="material-icons md-light m-1 md-18 py-1">lock</span>    
+                  <input 
+                    type="password"
+                    className='px-2 bg-slate-800 text-white outline-none w-full'
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
+                  />
+                </div>
             </div>
-        </div>
-
-        <p className='text-white text-sm w-80 text-left text-slate-400 mt-2'>
-              Password requirements:
-            <ul className='list-disc ml-4'>
-            <li>At least 12 characters long but 14 or more is better. 
-                </li>
-            <li>A combination of uppercase letters, lowercase letters, numbers, and symbols
-                </li>
-            </ul>
-        </p>
-
-        <div className='mt-2'>
-            <label id="birthday" className="text-white text-left">
-              What is your birth date?
-            </label>
-            <div className='bg-slate-800 px-1 rounded-md mt-2 w-fit text-left flex items-center'>
-              <span className="material-icons md-light m-1 md-18 py-1">calendar_today</span>    
-              <input 
-                type="date"
-                className='px-2 bg-slate-800 text-white outline-none w-fit'
-                value={birthDate}
-                onChange={(e) => setBirthDate(e.target.value)}
-              />
+            <div className='mt-2'>
+                <label id="birthday" className="text-white text-left">
+                  What is your birth date?
+                </label>
+                <div className='bg-slate-800 px-1 rounded-md mt-2 w-fit text-left flex items-center'>
+                  <span className="material-icons md-light m-1 md-18 py-1">calendar_today</span>    
+                  <input 
+                    type="date"
+                    className='px-2 bg-slate-800 text-white outline-none w-fit'
+                    value={birthDate}
+                    onChange={(e) => setBirthDate(e.target.value)}
+                    required
+                  />
+                </div>
             </div>
-        </div>
-        <Link to="/dashboard">
             <div className='text-center'>
                 <button 
-                className="mt-5 p-1 px-8 bg-emerald-500 rounded-full text-slate-950 font-bold border-slate-950 border-2
+                  className="mt-5 p-1 px-8 bg-emerald-500 rounded-full text-slate-950 font-bold border-slate-950 border-2
                     hover:bg-slate-900 hover:border-emerald-500 hover:text-emerald-500 hover:transform hover:scale-110 hover:transition-all
                     active:bg-emerald-500 active:transition-all" 
-                type="submit"
+                  type="submit"
                 >
-                Create your account!
+                  Create your account!
                 </button>
             </div>
-            </Link>
-          </div>
+          </form>
+          {error && <p className="text-red-500 mt-3">{error}</p>}
         </div>
       )}
     </div>
@@ -215,20 +257,18 @@ function RegistrationForm() {
 
 export default RegistrationForm;
 
-// helper function to get the CSRF token for the handler functions to utilize
-// https://gist.github.com/sirodoht/fb7a6e98d33fc460d4f1eadaff486e7b
-// https://docs.djangoproject.com/en/5.1/howto/csrf/
-function getCSRF(name){
+// Helper function to get the CSRF token
+function getCSRF(name) {
   let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
     }
-    return cookieValue;
+  }
+  return cookieValue;
 }

@@ -27,6 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+AUTH_USER_MODEL = 'loginpage.JournalUser'
 
 # Application definition
 
@@ -129,4 +130,4 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'ufgratigator.app@gmail.com'  # Your Gmail address
-EMAIL_HOST_PASSWORD = 'your_app_password'  # App Password
+EMAIL_HOST_PASSWORD = 'axga yacn rznv hrgy'  # App Password
