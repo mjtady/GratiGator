@@ -32,6 +32,7 @@ function RegistrationForm() {
 
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
+    console.log('Email submit triggered');
     setError(''); // Clear any previous errors
 
     try {
@@ -81,6 +82,7 @@ function RegistrationForm() {
     } catch (err) {
       setError('Network error. Please try again.');
     }
+
   };
 
   const handleFinalRegistration = async (e) => {

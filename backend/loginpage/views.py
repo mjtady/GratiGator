@@ -1,7 +1,13 @@
+from django.shortcuts import render, redirect
+# sending email - https://docs.djangoproject.com/en/5.1/topics/email/
+from django.core.mail import send_mail
+from django.conf import settings
+from .models import JournalUser
+from .forms import UserRegistration, VerificationCode
 from django.views.decorators.csrf import csrf_exempt
-import json
 from django.contrib.auth import authenticate
 from django.http import JsonResponse
+import random, json
 
 @csrf_exempt
 def login_view(request):
@@ -19,21 +25,12 @@ def login_view(request):
 
     return JsonResponse({"error": "Invalid request method"}, status=405)
 
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
-# sending email - https://docs.djangoproject.com/en/5.1/topics/email/
-from django.core.mail import send_mail
-from django.conf import settings
-from django.http import JsonResponse
-from .models import JournalUser
-from .forms import UserRegistration, VerificationCode
-import random
-
 
 def generate_verification_code():
     return ''.join(random.choices('0123456789', k=6)) #https://www.geeksforgeeks.org/random-choices-method-in-python/
 
 def register(request):
+    print("Register view called")  # Add this line to check if the view is hit
     if request.method == 'POST': # https://www.w3schools.com/tags/ref_httpmethods.asp
         form = UserRegistration(request.POST)
         if form.is_valid():
@@ -55,14 +52,14 @@ def register(request):
             user.set_unusable_password()
             user.save()
             
+            print("Sending verification email to:", email)
             send_mail(
                 'Gratigator Email Verification', 
                 f'Your verification code is: {verification_code}',
                 settings.EMAIL_HOST_USER,
                 [email],
-                fail_silently = False,
+                fail_silently=False,
             )
-            
         return JsonResponse({'success': True, 'user_id': user.id})
     return JsonResponse({'success': False, 'error': 'Invalid request method.'})
 

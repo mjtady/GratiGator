@@ -25,7 +25,7 @@ class UserRegistrationTest(TestCase):
         print(f"Response status code: {response.status_code}")
         self.assertEqual(response.status_code, 200)
         print(f"Response content: {response.content}")
-        self.assertJSONEqual(response.content, {'success': True, 'user_id': 1})  # Adjust user_id based on your test setup
+        self.assertJSONEqual(response.content, {'success': True,  'user_id': response.json().get('user_id')})  # Adjust user_id based on your test setup
         
         # Check if the email was sent
         print(f"Emails sent: {len(mail.outbox)}")

@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'corsheaders',
     'loginpage',
 ]
 
@@ -161,3 +160,11 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8000",
 ]
 CORS_ALLOW_HEADERS = ['*']
+
+# Setting up emails for verification
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'smtp.gnail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'ufgratigator.app@gmail.com' # GratiGator Gmail
+EMAIL_HOST_PASSWORD = 'axga yacn rznv hrgy'
