@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";  // Added useNavigate for redirection
+import { Link, useNavigate } from "react-router-dom"; // Added useNavigate for redirection
+import axios from "axios"; // Import Axios
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -9,36 +10,27 @@ export default function Login() {
   const navigate = useNavigate(); // useNavigate hook for redirection
 
   // Handle login logic
-const handleLogin = async (e) => {
-  e.preventDefault();
-  setError(""); // Reset error message
+  const handleLogin = async (e) => {
+      e.preventDefault();
+      try {
+          const response = await axios.post("http://127.0.0.1:8000/api/login/", {
+              username: emailOrUsername, // Use the actual input value
+              password: password,
+          });
 
-  try {
-    const response = await fetch("https://heartfelt-kindness.up.railway.app/api/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ emailOrUsername, password }),
-      mode: "no-cors", // Add no-cors mode here
-    });
+          console.log("Login successful:", response.data);
 
-    // Log response status (you won't be able to read the response data)
-    console.log("Response status:", response.status);  // Check response status
+          // Store token (if backend sends one)
+          localStorage.setItem("token", response.data.token);
 
-    // Since the response is opaque in no-cors mode, you won't be able to access its body
-    if (response.ok) {
-      console.log("Login request sent successfully.");
-      // Redirect to dashboard after successful login (although no response data is available)
-      navigate("/dashboard");
-    } else {
-      setError("Login failed or no response.");
-    }
-  } catch (err) {
-    console.error("Login error:", err);
-    setError("Something went wrong. Please try again.");
-  }
-};
+          // Redirect to dashboard or homepage
+          navigate("/dashboard");
+      } catch (error) {
+          console.error("Login error:", error.response ? error.response.data : error.message);
+          setError("Invalid username or password"); // Display error to user
+      }
+  };
+
 
   return (
     <div className="min-h-screen min-w-full flex flex-col bg-slate-900 items-center justify-center">

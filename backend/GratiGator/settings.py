@@ -33,19 +33,18 @@ ALLOWED_HOSTS = ['heartfelt-kindness.up.railway.app','127.0.0.1', 'localhost']
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'corsheaders',
     'loginpage'
-
-
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -53,8 +52,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'GratiGator.urls'
@@ -134,7 +131,7 @@ USE_TZ = True
 IS_PRODUCTION = os.environ.get('DJANGO_PRODUCTION', False)
 
 if IS_PRODUCTION:
-    DEBUG = True #CHANGE BACK TO FALSE
+    DEBUG = False #change as needed for testing
     STATIC_URL = '/static/'
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 else:
@@ -149,5 +146,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
-CORS_ALLOWED_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # Allow local React development
+    "https://heartfelt-kindness.up.railway.app", # Allow production frontend
+    "http://127.0.0.1:8000",
+]
 CORS_ALLOW_HEADERS = ['*']

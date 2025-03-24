@@ -1,18 +1,20 @@
-from django.contrib.auth import authenticate, login
-from django.http import JsonResponse
-from django.contrib.auth.models import User
+from django.views.decorators.csrf import csrf_exempt
 import json
+from django.contrib.auth import authenticate
+from django.http import JsonResponse
 
+@csrf_exempt
 def login_view(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         data = json.loads(request.body)
-        username_or_email = data['emailOrUsername']
-        password = data['password']
+        username = data.get("username")
+        password = data.get("password")
 
-        user = authenticate(request, username=username_or_email, password=password)
+        user = authenticate(username=username, password=password)  # Check database
 
         if user is not None:
-            login(request, user)
-            return JsonResponse({'message': 'Login successful', 'user_id': user.id})
+            return JsonResponse({"message": "Login successful", "user": user.username})
         else:
-            return JsonResponse({'error': 'Invalid credentials'}, status=400)
+            return JsonResponse({"error": "Invalid credentials"}, status=400)
+
+    return JsonResponse({"error": "Invalid request method"}, status=405)
