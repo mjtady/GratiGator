@@ -39,7 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'loginpage'
+
 
 ]
 
@@ -52,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'GratiGator.urls'
@@ -131,7 +134,7 @@ USE_TZ = True
 IS_PRODUCTION = os.environ.get('DJANGO_PRODUCTION', False)
 
 if IS_PRODUCTION:
-    DEBUG = False
+    DEBUG = True #CHANGE BACK TO FALSE
     STATIC_URL = '/static/'
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 else:
@@ -144,3 +147,7 @@ else:
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+
+CORS_ALLOWED_ORIGINS = True
+CORS_ALLOW_HEADERS = ['*']
