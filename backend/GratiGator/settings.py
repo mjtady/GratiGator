@@ -57,11 +57,6 @@ MIDDLEWARE = [
 
 CORS_ALLOW_ALL_ORIGINS = True
 
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
-    'https://localhost:3000',
-]
-
 ROOT_URLCONF = 'GratiGator.urls'
 
 TEMPLATES = [
@@ -156,6 +151,9 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # Allow local React development
+    'https://localhost:3000',
+    'http://localhost:8000',
+    'https://localhost:8000',
     "https://heartfelt-kindness.up.railway.app", # Allow production frontend
     "http://127.0.0.1:8000",
 ]
@@ -167,4 +165,4 @@ EMAIL_HOST = 'smtp.gnail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'ufgratigator.app@gmail.com' # GratiGator Gmail
-EMAIL_HOST_PASSWORD = 'axga yacn rznv hrgy'
+EMAIL_HOST_PASSWORD = 'axgayacnrznvhrgy'

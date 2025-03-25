@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 # sending email - https://docs.djangoproject.com/en/5.1/topics/email/
 from django.core.mail import send_mail
-from django.conf import settings
+from GratiGator.settings import EMAIL_HOST_USER
 from .models import JournalUser
 from .forms import UserRegistration, VerificationCode
 from django.views.decorators.csrf import csrf_exempt
@@ -53,13 +53,16 @@ def register(request):
             user.save()
             
             print("Sending verification email to:", email)
-            send_mail(
-                'Gratigator Email Verification', 
-                f'Your verification code is: {verification_code}',
-                settings.EMAIL_HOST_USER,
-                [email],
-                fail_silently=False,
-            )
+            try:
+                send_mail(
+                    'Gratigator Email Verification', 
+                    f'Your verification code is: {verification_code}',
+                    EMAIL_HOST_USER,
+                    [email],
+                    fail_silently=False,
+                )
+            except Exception as e:
+                print("Error sending email:", e)
         return JsonResponse({'success': True, 'user_id': user.id})
     return JsonResponse({'success': False, 'error': 'Invalid request method.'})
 

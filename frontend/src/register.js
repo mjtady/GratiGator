@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import axios from "axios"; // Import Axios
 
 function RegistrationForm() {
   const [email, setEmail] = useState('');
@@ -26,27 +27,27 @@ function RegistrationForm() {
         }
       }
     }
-    console.log(getCookies('csrftoken'));
     return cookieValue;
   }
 
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
     console.log('Email submit triggered');
+    console.log(email);
     setError(''); // Clear any previous errors
-
+  
     try {
-      const response = await fetch('http://localhost:8000/register/', {
-        mode: 'cors',
-        method: 'POST',
+      const response = await axios.post('http://localhost:8000/api/register/', {
+        email,
+      }, {
         headers: {
           'Content-Type': 'application/json',
           'X-CSRFToken': getCookies('csrftoken'),
         },
-        body: JSON.stringify({ email }),
       });
-
-      const data = await response.json();
+  
+      console.log(getCookies('csrftoken'))
+      const data = response.data;
       if (data.success) {
         setUserId(data.user_id);
         setShowVerification(true);
@@ -57,23 +58,23 @@ function RegistrationForm() {
       setError('Network error. Please try again.');
     }
   };
-
+  
   const handleVerificationSubmit = async (e) => {
     e.preventDefault();
     setError(''); // Clear any previous errors
-
+  
     try {
-      const response = await fetch('http://localhost:8000/verify_email/', {
-        mode: 'cors',
-        method: 'POST',
+      const response = await axios.post('http://localhost:8000/api/verify_email/', {
+        user_id: userId,
+        verification_code: verificationCode,
+      }, {
         headers: {
           'Content-Type': 'application/json',
           'X-CSRFToken': getCookies('csrftoken'),
         },
-        body: JSON.stringify({ user_id: userId, verification_code: verificationCode }),
       });
-
-      const data = await response.json();
+  
+      const data = response.data;
       if (data.success) {
         setIsVerified(true);
       } else {
@@ -82,34 +83,31 @@ function RegistrationForm() {
     } catch (err) {
       setError('Network error. Please try again.');
     }
-
   };
-
+  
   const handleFinalRegistration = async (e) => {
     e.preventDefault();
     setError(''); // Clear any previous errors
-
+  
     if (password !== confirmPassword) {
       setError('Passwords do not match.');
       return;
     }
-
+  
     try {
-      const response = await fetch('http://localhost:8000/register/', {
-        method: 'POST',
+      const response = await axios.post('http://localhost:8000/api/register/', {
+        user_id: userId,
+        username,
+        password,
+        dob: birthDate,
+      }, {
         headers: {
           'Content-Type': 'application/json',
           'X-CSRFToken': getCookies('csrftoken'),
         },
-        body: JSON.stringify({
-          user_id: userId,
-          username,
-          password,
-          dob: birthDate,
-        }),
       });
-
-      const data = await response.json();
+  
+      const data = response.data;
       if (data.success) {
         // Redirect to login or dashboard
         window.location.href = '/dashboard';
@@ -119,7 +117,7 @@ function RegistrationForm() {
     } catch (err) {
       setError('Network error. Please try again.');
     }
-  };
+  };  
 
   return (
     <div className="min-h-screen min-w-full flex flex-col bg-slate-900 items-center justify-center text-center">

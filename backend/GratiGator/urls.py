@@ -21,7 +21,4 @@ from loginpage import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('loginpage.urls')),  # Include loginpage URLs
-    path('admin/', admin.site.urls),
-    path('register/', views.register, name='register'),
-    path('verify_email/', views.verify_email, name='verify_email'),
 ]
