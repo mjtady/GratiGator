@@ -165,4 +165,4 @@ EMAIL_HOST = 'smtp.gnail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'ufgratigator.app@gmail.com' # GratiGator Gmail
-EMAIL_HOST_PASSWORD = 'axgayacnrznvhrgy'
+EMAIL_HOST_PASSWORD = ''
