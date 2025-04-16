@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';  // Import axios
 
 function RegistrationForm() {
@@ -9,10 +9,15 @@ function RegistrationForm() {
   const [isVerified, setIsVerified] = useState(false);
   const [emailSent, setEmailSent] = useState(false); // New state for email sent
   const [verificationError, setVerificationError] = useState(''); // Error for verification
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [registrationSuccess, setRegistrationSuccess] = useState(false);
+  const [registrationError, setRegistrationError] = useState('');
+
+  const navigate = useNavigate();
 
   const handleEmailSubmit = (e) => {
     e.preventDefault();
-
     // Use the email from the state
     axios.post('http://127.0.0.1:8000/verification/send-verification-email/', {
       email: email,  // Use the state email instead of hardcoded one
@@ -51,8 +56,36 @@ function RegistrationForm() {
       console.error('Error:', error.response);  // Log full error response
       setVerificationError('There was an error verifying the code. Please try again.');
     });
-
   };
+
+  const handleRegistrationSubmit = (e) => {
+      e.preventDefault();
+
+      axios.post('http://127.0.0.1:8000/verification/register-user/', {
+        email: email,
+        username: username,
+        password: password,
+      })
+      .then((response) => {
+        console.log(response);  // Log the response from the backend
+        if (response.data.status === 'success') {
+          setRegistrationSuccess(true);
+          setRegistrationError('');
+          navigate("/dashboard");
+
+        } else {
+          setRegistrationError(response.data.message || 'Registration failed.');
+        }
+      })
+      .catch((error) => {
+          if (error.response && error.response.data.error) {
+            setRegistrationError(error.response.data.error);
+          } else {
+            setRegistrationError('There was an error creating your account.');
+          }
+        });
+  };
+
 
   return (
     <div className="min-h-screen min-w-full flex flex-col bg-slate-900 items-center justify-center text-center">
@@ -131,11 +164,69 @@ function RegistrationForm() {
           </form>
         </div>
       ) : (
-        <div>
-          <h1 className="instrument-serif-regular font-bold text-4xl text-emerald-300 text-center">
+        <div className="flex flex-col items-center">
+          <h1 className="instrument-serif-regular font-bold text-4xl text-emerald-300 text-center mb-4">
             Enter your account details:
           </h1>
-          {/* Rest of the form for username, password, etc. */}
+          <form onSubmit={handleRegistrationSubmit} className="flex flex-col items-center space-y-4 w-full">
+            <div className="w-96 text-left">
+              <label htmlFor="username" className="text-white">
+                Create a username
+              </label>
+              <div className="bg-slate-800 px-1 rounded-md mt-1 w-full text-left flex items-center">
+                <span className="material-icons md-light m-1 md-18 py-1">person</span>
+                <input
+                  type="text"
+                  id="username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="Choose your username"
+                  className="px-2 bg-slate-800 text-white outline-none w-full"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="w-96 text-left">
+              <label htmlFor="password" className="text-white">
+                Create a password
+              </label>
+              <div className="bg-slate-800 px-1 rounded-md mt-1 w-full text-left flex items-center">
+                <span className="material-icons md-light m-1 md-18 py-1">lock</span>
+                <input
+                  type="password"
+                  id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Choose a password"
+                  className="px-2 bg-slate-800 text-white outline-none w-full"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="min-h-[20px] w-96 text-left">
+              {registrationError && (
+                <p className="text-red-500 text-sm mt-1 text-center w-full">
+                  {registrationError}
+                </p>
+              )}
+              {registrationSuccess && (
+                <p className="text-green-500 text-sm mt-1 text-center w-full">
+                  Registration successful!
+                </p>
+              )}
+            </div>
+
+            <button
+              className="mt-2 p-1 px-8 bg-emerald-500 rounded-full text-slate-950 font-bold border-slate-950 border-2
+                hover:bg-slate-900 hover:border-emerald-500 hover:text-emerald-500 hover:transform hover:scale-110 hover:transition-all
+                active:bg-emerald-500 active:transition-all"
+              type="submit"
+            >
+              Register
+            </button>
+          </form>
         </div>
       )}
     </div>

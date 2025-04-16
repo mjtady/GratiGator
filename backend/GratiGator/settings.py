@@ -151,9 +151,11 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # Allow local React development
     "https://heartfelt-kindness.up.railway.app", # Allow production frontend
     "http://127.0.0.1:8000",
+    "http://127.0.0.1:3000",
 ]
 CORS_ALLOW_HEADERS = ['*']
 
+CORS_ALLOW_CREDENTIALS = True
 
 # Add the following email configuration settings:
 

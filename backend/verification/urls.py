@@ -7,4 +7,8 @@ urlpatterns = [
 
     # URL for verifying the verification code
     path('verify-verification-code/', views.verify_verification_code, name='verify_verification_code'),
+
+    # URL for creating the login details
+    path('register-user/', views.register_user, name='register_user'),
+
 ]
