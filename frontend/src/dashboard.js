@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
+import axios from 'axios';
 import { useState } from "react";
 import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSameDay, subMonths, addMonths } from 'date-fns';
 
@@ -20,36 +21,91 @@ import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSa
     }
   };
 
-export default function Dashboard() {
-  var username = "USER"
+  export default function Dashboard() {
+    const [username, setUsername] = useState("USER");
+    const [isOpen, setIsOpen] = useState(false);
+    const [step, setStep] = useState(1);
+    const [mood, setMood] = useState(null);
+    const [currentDate, setCurrentDate] = useState(new Date());
+    const [selectedDate, setSelectedDate] = useState(null);
+    const [gratitude, setGratitude] = useState("");
+    const [challenges, setChallenges] = useState("");
+    const [posThoughts, setPosThoughts] = useState("");
+    const [negThoughts, setNegThoughts] = useState("");
+    const [entries, setEntries] = useState([]);
   
-  const [isOpen, setIsOpen] = useState(false);
-  const [step, setStep] = useState(1);
-
-  const [mood, setMood] = useState(null);
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState(null);
+    // Fetch user and entries on component mount
+    useEffect(() => {
+      const fetchUserAndEntries = async () => {
+        try {
+          const token = localStorage.getItem('token');
+          const [userResponse, entriesResponse] = await Promise.all([
+            axios.get('/api/auth/user', { headers: { 'Authorization': `Token ${token}` } }),
+            axios.get('/api/journal', { headers: { 'Authorization': `Token ${token}` } })
+          ]);
+          setUsername(userResponse.data.username);
+          setEntries(entriesResponse.data);
+        } catch (error) {
+          console.error('Error fetching data:', error.response?.data || error.message);
+        }
+      };
+      fetchUserAndEntries();
+    }, []);
   
-  const startDate = startOfWeek(startOfMonth(currentDate));
-  const endDate = endOfWeek(endOfMonth(currentDate));
+    // Calendar date calculations
+    const startDate = startOfWeek(startOfMonth(currentDate));
+    const endDate = endOfWeek(endOfMonth(currentDate));
+    const days = [];
+    let day = startDate;
+    while (day <= endDate) {
+      days.push(day);
+      day = addDays(day, 1);
+    }
   
-  const days = [];
-  let day = startDate;
-  while (day <= endDate) {
-    days.push(day);
-    day = addDays(day, 1);
-  }
-
-  const handleToday = () => {
-    setCurrentDate(new Date());
-    setSelectedDate(new Date());  // Optionally select today's date
-  };
+    const handleToday = () => {
+      setCurrentDate(new Date());
+      setSelectedDate(new Date());
+    };
+  
+    const handleFinishJournal = async () => {
+      try {
+        const response = await axios.post('/api/journal/', {
+          gratitude: gratitude || "",
+          challenges: challenges || "",
+          pos_thoughts: posThoughts || "",
+          neg_thoughts: negThoughts || "",
+          mood: mood || 3,
+        }, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${localStorage.getItem('token')}`,
+          },
+        });
+  
+        setEntries([response.data, ...entries]);
+        resetForm();
+        setIsOpen(false);
+      } catch (error) {
+        console.error('Failed to save journal entry:', error.response?.data || error.message);
+        alert(`Error: ${error.response?.data?.mood?.[0] || 'Failed to save entry'}`);
+      }
+    };
+  
+    const resetForm = () => {
+      setGratitude("");
+      setChallenges("");
+      setPosThoughts("");
+      setNegThoughts("");
+      setMood(null);
+      setStep(1);
+    };
+  
+  const selectedEntry = selectedDate
+  ? entries.find((entry) => isSameDay(new Date(entry.date), selectedDate))
+  : null;
 
   return (
-        <div className="bg-slate-900 min-w-full min-h-screen text-center">
-
-
-
+<div className="bg-slate-900 min-w-full min-h-screen text-center">
 <div className='inline-block w-8/12 text-left'>
 <h1 className="instrument-serif-regular font-bold text-4xl text-emerald-300 pt-10 text-left">
     Hello, {username} ! </h1>
@@ -81,6 +137,8 @@ export default function Dashboard() {
             placeholder="Think about the good things today. Don't be afraid of how big or small."
             className="w-full resize-y p-2 border rounded-md max-h-full overflow-auto h-48 playpen-sans
             focus:outline-dashed focus:outline-1 focus:outline-emerald-700"
+            value={gratitude}
+            onChange={(e) => setGratitude(e.target.value)}
           ></textarea>
           <div className="mt-4 flex justify-center gap-4">
             <button
@@ -112,6 +170,8 @@ export default function Dashboard() {
             placeholder="Reflect on anything that was difficult or uncomfortable."
             className="w-full resize-y p-2 border rounded-md max-h-full overflow-auto h-48 playpen-sans
             focus:outline-dashed focus:outline-1 focus:outline-emerald-700"
+            value={challenges}
+            onChange={(e) => setChallenges(e.target.value)}
           ></textarea>
           <div className="mt-4 flex justify-center gap-4">
             <button
@@ -138,22 +198,24 @@ export default function Dashboard() {
           </h1>
           <h1 className="text-xl mb-2 font-semibold instrument-serif-regular text-emerald-800 text-left">
             Your positive thoughts:
-          </h1>
-          <p
-            className="w-full border rounded-md max-h-full overflow-auto h-32 playpen-sans
-            text-left text-sm bg-white p-4"
-          >
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.            
-          </p>
+            </h1>
+            <textarea
+              placeholder="What positive thoughts or insights did you have?"
+              className="w-full resize-y p-2 border rounded-md max-h-full overflow-auto h-32 playpen-sans
+              focus:outline-dashed focus:outline-1 focus:outline-emerald-700"
+              value={posThoughts}
+              onChange={(e) => setPosThoughts(e.target.value)}
+            ></textarea>
           <h1 className="text-xl mb-2 font-semibold instrument-serif-regular text-emerald-800 text-left mt-2">
             Your negative thoughts:
-          </h1>
-          <p
-            className="w-full border rounded-md max-h-full overflow-auto h-32 playpen-sans
-          text-left text-sm bg-white p-4"
-          >
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.            
-          </p>
+            </h1>
+            <textarea
+              placeholder="What negative thoughts or patterns did you notice?"
+              className="w-full resize-y p-2 border rounded-md max-h-full overflow-auto h-32 playpen-sans
+              focus:outline-dashed focus:outline-1 focus:outline-emerald-700"
+              value={negThoughts}
+              onChange={(e) => setNegThoughts(e.target.value)}
+            ></textarea>
 
           <h1 className="text-xl mb-1 font-semibold instrument-serif-regular text-emerald-800 text-left mt-2">
             Rate Your Mood:
@@ -189,12 +251,9 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
               Back
             </button>
             <button
-              onClick={() => {
-                setIsOpen(false);
-                setStep(1);
-              }}
+              onClick={handleFinishJournal}
               className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 hover:underline-offset-4 hover:underline"
-            >
+              >
               Finish
             </button>
           </div>
@@ -264,34 +323,39 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         </div>
       </div>
 
-      {/* Info Blurb Section */}
+      {/* Info Blurb Section - Now Dynamic */}
       <div className="w-full lg:w-2/3 h-fit min-h-80 py-4 bg-slate-800 shadow-lg border border-slate-600 rounded-md text-center">
-        {selectedDate && (
-            <div>
-          <div className="text-2xl instrument-serif-regular text-left text-emerald-500 px-4 pb-4">
-            
-            <p> {format(selectedDate, "PPP")}</p>
-
-            {/* Additional details can go here */}
-
-          </div>
-          <div className='bg-slate-600 h-0.5 w-full p-0'></div>
-          <p className="text-left p-4 ">
-            <span className="text-emerald-500 font-bold">Gratitudes:</span>
-            <ul className="text-white text-sm">
-                <li>
-                I got to go to Copperline Coffee today! I ordered a latte and managed to get a lot of work done.
-                </li>
-                
-                
-            </ul>
+        {selectedEntry ? (
+          <div>
+            <div className="text-2xl instrument-serif-regular text-left text-emerald-500 px-4 pb-4">
+              <p>{format(new Date(selectedEntry.date), "PPP")}</p>
+            </div>
+            <div className='bg-slate-600 h-0.5 w-full p-0'></div>
+            <p className="text-left p-4">
+              <span className="text-emerald-500 font-bold">Gratitudes:</span>
+              <ul className="text-white text-sm">
+                {selectedEntry.gratitude && (
+                  <li>{selectedEntry.gratitude}</li>
+                )}
+              </ul>
             </p>
-          <p className="text-left px-4 text-white">Mood: 5/5 (not fully fleshed out)</p>
+            <p className="text-left px-4 text-white">
+              Mood: {selectedEntry.mood}/5
+            </p>
+          </div>
+        ) : (
+          <div>
+            <div className="text-2xl instrument-serif-regular text-left text-emerald-500 px-4 pb-4">
+              <p>{selectedDate ? format(selectedDate, "PPP") : "No date selected"}</p>
+            </div>
+            <div className='bg-slate-600 h-0.5 w-full p-0'></div>
+            <p className="text-left p-4 text-white">
+              No entry for this date.
+            </p>
           </div>
         )}
       </div>
     </div>
     </div>
-
   );
 }
