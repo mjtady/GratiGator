@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'loginpage',
+    'verification',
     'journalpage',
 ]
 
@@ -163,5 +164,23 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # Allow local React development
     "https://heartfelt-kindness.up.railway.app", # Allow production frontend
     "http://127.0.0.1:8000",
+    "http://127.0.0.1:3000",
 ]
 CORS_ALLOW_HEADERS = ['*']
+
+CORS_ALLOW_CREDENTIALS = True
+
+# Add the following email configuration settings:
+
+# Email settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+# For Gmail SMTP (You can change this to another provider like SendGrid or Mailgun)
+EMAIL_HOST = 'smtp.gmail.com'  # SMTP server for Gmail
+EMAIL_PORT = 587  # Port for TLS (use 465 for SSL)
+EMAIL_USE_TLS = True  # Enable TLS encryption
+EMAIL_HOST_USER = 'ufgratigator.app@gmail.com' # GratiGator Gmail
+EMAIL_HOST_PASSWORD = 'axga yacn rznv hrgy'
+DEFAULT_FROM_EMAIL = 'ufgratigator.app@gmail.com'  # The email address used as the sender (default)
+
+
