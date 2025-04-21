@@ -14,8 +14,7 @@ class JournalEntry(models.Model):
     date = models.DateField(auto_now_add=True)
     gratitude = models.TextField(blank=True, null=True)
     challenges = models.TextField(blank=True, null=True)
-    pos_thoughts = models.TextField(blank=True, null=True)
-    neg_thoughts = models.TextField(blank=True, null=True)
+
 
     class Mood(models.IntegerChoices):
         VERY_SAD = 1, 'Very Sad'

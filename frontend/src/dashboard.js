@@ -30,8 +30,6 @@ import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSa
     const [selectedDate, setSelectedDate] = useState(null);
     const [gratitude, setGratitude] = useState("");
     const [challenges, setChallenges] = useState("");
-    const [posThoughts, setPosThoughts] = useState("");
-    const [negThoughts, setNegThoughts] = useState("");
     const [entries, setEntries] = useState([]);
   
     // Fetch user and entries on component mount
@@ -40,8 +38,8 @@ import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSa
         try {
           const token = localStorage.getItem('token');
           const [userResponse, entriesResponse] = await Promise.all([
-            axios.get('/api/auth/user', { headers: { 'Authorization': `Token ${token}` } }),
-            axios.get('/api/journal', { headers: { 'Authorization': `Token ${token}` } })
+            axios.get('http://127.0.0.1:8000/api/auth/user', { headers: { 'Authorization': `Token ${token}` } }),
+            axios.get('http://127.0.0.1:8000/api/journal', { headers: { 'Authorization': `Token ${token}` } })
           ]);
           setUsername(userResponse.data.username);
           setEntries(entriesResponse.data);
@@ -69,11 +67,9 @@ import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSa
   
     const handleFinishJournal = async () => {
       try {
-        const response = await axios.post('/api/journal/', {
+        const response = await axios.post('http://127.0.0.1:8000/api/journal/', {
           gratitude: gratitude || "",
           challenges: challenges || "",
-          pos_thoughts: posThoughts || "",
-          neg_thoughts: negThoughts || "",
           mood: mood || 3,
         }, {
           headers: {
@@ -94,8 +90,6 @@ import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSa
     const resetForm = () => {
       setGratitude("");
       setChallenges("");
-      setPosThoughts("");
-      setNegThoughts("");
       setMood(null);
       setStep(1);
     };
@@ -196,26 +190,6 @@ import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSa
           <h1 className="text-2xl mb-4 font-semibold instrument-serif-regular text-emerald-800 text-left">
             So overall, how do you feel today?
           </h1>
-          <h1 className="text-xl mb-2 font-semibold instrument-serif-regular text-emerald-800 text-left">
-            Your positive thoughts:
-            </h1>
-            <textarea
-              placeholder="What positive thoughts or insights did you have?"
-              className="w-full resize-y p-2 border rounded-md max-h-full overflow-auto h-32 playpen-sans
-              focus:outline-dashed focus:outline-1 focus:outline-emerald-700"
-              value={posThoughts}
-              onChange={(e) => setPosThoughts(e.target.value)}
-            ></textarea>
-          <h1 className="text-xl mb-2 font-semibold instrument-serif-regular text-emerald-800 text-left mt-2">
-            Your negative thoughts:
-            </h1>
-            <textarea
-              placeholder="What negative thoughts or patterns did you notice?"
-              className="w-full resize-y p-2 border rounded-md max-h-full overflow-auto h-32 playpen-sans
-              focus:outline-dashed focus:outline-1 focus:outline-emerald-700"
-              value={negThoughts}
-              onChange={(e) => setNegThoughts(e.target.value)}
-            ></textarea>
 
           <h1 className="text-xl mb-1 font-semibold instrument-serif-regular text-emerald-800 text-left mt-2">
             Rate Your Mood:
@@ -331,14 +305,25 @@ import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSa
               <p>{format(new Date(selectedEntry.date), "PPP")}</p>
             </div>
             <div className='bg-slate-600 h-0.5 w-full p-0'></div>
-            <p className="text-left p-4">
-              <span className="text-emerald-500 font-bold">Gratitudes:</span>
-              <ul className="text-white text-sm">
-                {selectedEntry.gratitude && (
+            <div className="text-left p-4">
+              <p className="text-emerald-500 font-bold mb-1">Gratitudes:</p>
+              <ul className="text-white text-sm mb-4">
+                {selectedEntry.gratitude ? (
                   <li>{selectedEntry.gratitude}</li>
+                ) : (
+                  <li className="italic text-slate-400">No gratitude entry.</li>
                 )}
               </ul>
-            </p>
+
+              <p className="text-emerald-500 font-bold mb-1">Challenges:</p>
+              <ul className="text-white text-sm">
+                {selectedEntry.challenges ? (
+                  <li>{selectedEntry.challenges}</li>
+                ) : (
+                  <li className="italic text-slate-400">No challenge recorded.</li>
+                )}
+              </ul>
+            </div>
             <p className="text-left px-4 text-white">
               Mood: {selectedEntry.mood}/5
             </p>
