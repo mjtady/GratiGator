@@ -11,3 +11,4 @@ class JournalSerializer(serializers.ModelSerializer):
         model = JournalEntry
         fields = ['id', 'user', 'date', 'gratitude', 'challenges', 'mood']
         read_only_fields = ['id', 'date'] #  sets the id, user, and data automatically
+

@@ -18,19 +18,25 @@ def journal_entries(request):
         entries = JournalEntry.objects.filter(user=request.user)
         serializer = JournalSerializer(entries, many=True)
         return Response(serializer.data)
-    
+
     elif request.method == 'POST':
         print("Headers:", request.headers)
-        print("User:", request.user)
-        print("Data:", request.data)
-        
-        serializer = JournalSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(user=request.user, date=timezone.now().date())
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            print("Serializer errors:", serializer.errors)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    print("User:", request.user)
+    print("Data:", request.data)
+
+    serializer = JournalSerializer(data=request.data)
+    if serializer.is_valid():
+        # Save initial data
+        entry = serializer.save(user=request.user, date=timezone.now().date())
+
+        # Refetch from DB to get any post-save trigger changes
+        refreshed_entry = JournalEntry.objects.get(pk=entry.pk)
+        refreshed_serializer = JournalSerializer(refreshed_entry)
+
+        return Response(refreshed_serializer.data, status=status.HTTP_201_CREATED)
+    else:
+        print("Serializer errors:", serializer.errors)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])

@@ -308,21 +308,21 @@ import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSa
             <div className="text-left p-4">
               <p className="text-emerald-500 font-bold mb-1">Gratitudes:</p>
               <ul className="text-white text-sm mb-4">
-                {selectedEntry.gratitude ? (
+                {selectedEntry.gratitude && selectedEntry.gratitude.trim() !== "" ? (
                   <li>{selectedEntry.gratitude}</li>
                 ) : (
                   <li className="italic text-slate-400">No gratitude entry.</li>
                 )}
               </ul>
 
-              <p className="text-emerald-500 font-bold mb-1">Challenges:</p>
-              <ul className="text-white text-sm">
-                {selectedEntry.challenges ? (
-                  <li>{selectedEntry.challenges}</li>
-                ) : (
-                  <li className="italic text-slate-400">No challenge recorded.</li>
-                )}
-              </ul>
+              {selectedEntry.challenges && selectedEntry.challenges.trim() !== "" && (
+                <>
+                  <p className="text-emerald-500 font-bold mb-1">Challenges:</p>
+                  <ul className="text-white text-sm">
+                    <li>{selectedEntry.challenges}</li>
+                  </ul>
+                </>
+              )}
             </div>
             <p className="text-left px-4 text-white">
               Mood: {selectedEntry.mood}/5
