@@ -40,8 +40,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework.authtoken',
     'loginpage',
     'verification',
+    'journalpage',
 ]
 
 MIDDLEWARE = [
@@ -54,6 +57,16 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ]
+}
+
 
 ROOT_URLCONF = 'GratiGator.urls'
 
@@ -169,5 +182,3 @@ EMAIL_USE_TLS = True  # Enable TLS encryption
 EMAIL_HOST_USER = 'ufgratigator.app@gmail.com' # GratiGator Gmail
 EMAIL_HOST_PASSWORD = 'axga yacn rznv hrgy'
 DEFAULT_FROM_EMAIL = 'ufgratigator.app@gmail.com'  # The email address used as the sender (default)
-
-

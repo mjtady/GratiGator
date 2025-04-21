@@ -19,5 +19,6 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('loginpage.urls')),  # Correctly includes loginpage URLs
-    path('verification/', include('verification.urls')),  # Correctly includes verification URLs
+    path('verification/', include('verification.urls')),  # Correctly includes verification URLs    path('api/', include('journalpage.urls')),
+        path('api/', include('journalpage.urls')), # Correctly include journalpage URLs
 ]
