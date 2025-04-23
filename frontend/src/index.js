@@ -19,7 +19,7 @@ export default function Home(){
     </div>
   </nav>
 
-  {/* Page Content */}
+  {/* Page Content: mostly just an explaination of what GratiGator is */}
   <div className="flex-1 text-center pt-10 items-center min-h-fit w-fit">
     <h2 className="inline-block text-emerald-500 text-6xl font-serif mt-28 instrument-serif-regular">Gratigator:</h2>
     <p className="inline-block text-4xl mt-5 pl-5 playpen-sans">a Gator's daily gratitude journal.</p>
@@ -39,8 +39,12 @@ export default function Home(){
       to improve campus-wide mental health, reminding students that there are good things coming their 
       way admist some stressors and negativity.
       
+  {/* team members credited */}
+
+
       <h2 className="block text-emerald-500 text-4xl font-serif mt-5 instrument-serif-regular mb-5 text-left">Team:
       </h2>
+      
       <p>
       Anthony Le - UI/UX, Frontend
       </p>
@@ -51,6 +55,8 @@ export default function Home(){
       </p>
 
   </div>
+    {/* wrote a debug method to go into dashboard quicker to be able to view changes, since you can no longer enter without being logged in via login / registration */}
+
   <a href="./dashboard">
   <button className="hover:text-emerald-400 transition mt-56">Dashboard (debug)</button>
   </a>
@@ -58,6 +64,8 @@ export default function Home(){
 </div>
     )
 };
+
+  {/* router to go to different pages */}
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
