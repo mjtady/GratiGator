@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useState } from "react";
 import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSameDay, subMonths, addMonths } from 'date-fns';
 
+{/* grab mood messages for creating new journal entries, mostly flavor text */}
   const getMoodMessage = (rating) => {
     switch (rating) {
       case 1:
@@ -101,6 +102,7 @@ import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSa
   return (
 <div className="bg-slate-900 min-w-full min-h-screen text-center">
 <div className='inline-block w-8/12 text-left'>
+  {/* general welcome stuff */}
 <h1 className="instrument-serif-regular font-bold text-4xl text-emerald-300 pt-10 text-left">
     Hello, {username} ! </h1>
     <p className="text-left text-white">
@@ -115,13 +117,15 @@ import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSa
           Let's Journal!
           </button>
         </a>
-        {isOpen && (
-          
+
+  {/* daily gratitude journaling window */}
+
+  {isOpen && (
   <div className="fixed inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 z-50">
 
     <div className="bg-slate-200 p-6 rounded-sm shadow-lg w-96 text-center relative">
 
-      {/* Step 1 */}
+      {/* Step 1: Write what you're grateful for */}
       {step === 1 && (
         <>
           <h1 className="text-2xl mb-4 font-semibold instrument-serif-regular text-emerald-800 text-left">
@@ -154,7 +158,7 @@ import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSa
         </>
       )}
 
-      {/* Step 2 */}
+      {/* Step 2: Write challenges/problems of the day */}
       {step === 2 && (
         <>
           <h1 className="text-2xl mb-4 font-semibold instrument-serif-regular text-emerald-800 text-left">
@@ -184,7 +188,7 @@ import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSa
         </>
       )}
 
-      {/* Step 3 */}
+      {/* Step 3: Ask user to rate their mood */}
       {step === 3 && (
         <>
           <h1 className="text-2xl mb-4 font-semibold instrument-serif-regular text-emerald-800 text-left">
@@ -297,7 +301,7 @@ import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSa
         </div>
       </div>
 
-      {/* Info Blurb Section - Now Dynamic */}
+      {/* Content accessed per day, showing gratitude, mood, challenges */}
       <div className="w-full lg:w-2/3 h-fit min-h-80 py-4 bg-slate-800 shadow-lg border border-slate-600 rounded-md text-center">
         {selectedEntry ? (
           <div>

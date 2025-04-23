@@ -42,7 +42,7 @@ export default function Login() {
           href="https://fonts.googleapis.com/icon?family=Material+Icons"
           rel="stylesheet"
         ></link>
-
+          {/* login page ui */}
         <div className="text-center">
           <h1 className="instrument-serif-regular font-bold text-4xl text-emerald-300">
             Log-in
@@ -99,6 +99,7 @@ export default function Login() {
               </button>
             </div>
 
+            {/* go to registration if no account exists */}
             <p className="text-white text-sm">
               No account?{" "}
               <Link to="/register" className="text-emerald-500 text-sm underline">

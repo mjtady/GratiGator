@@ -93,6 +93,8 @@ function RegistrationForm() {
 
       {!showVerification ? (
         <>
+          {/* here, users submit their email to send a code to their email inbox */}
+
           <h1 className="instrument-serif-regular font-bold text-4xl text-emerald-300">
             Register an Account
           </h1>
@@ -133,6 +135,7 @@ function RegistrationForm() {
         </>
       ) : !isVerified ? (
         <div>
+           {/* vertifying account ui */}
           <div className="w-80 mt-4 text-left">
             <h1 className="instrument-serif-regular font-bold text-4xl text-emerald-300 text-center">
               Verify your email
@@ -163,8 +166,12 @@ function RegistrationForm() {
             </button>
           </form>
         </div>
+      
       ) : (
+
         <div className="flex flex-col items-center">
+          {/* create user data/account after vertification */}
+
           <h1 className="instrument-serif-regular font-bold text-4xl text-emerald-300 text-center mb-4">
             Enter your account details:
           </h1>
