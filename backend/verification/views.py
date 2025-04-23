@@ -23,9 +23,14 @@ def send_verification_email(request):
             # Parse JSON data from the request body
             data = json.loads(request.body.decode('utf-8'))
             email = data.get('email')  # Extracting email from JSON data
+            email = data.get('email')
 
             if not email:
                 return JsonResponse({'status': 'error', 'message': 'Email not provided'}, status=400)
+
+            if not email.endswith('@ufl.edu'): # Ensure only UF emails are accepted
+                return JsonResponse({'status': 'error', 'message': 'Only @ufl.edu email addresses are allowed'}, status=400)
+
 
             # Generate a random verification code
             verification_code = generate_verification_code()
@@ -84,6 +89,10 @@ def register_user(request):
             username = data.get('username')
             email = data.get('email')
             password = data.get('password')
+
+
+            if not email.endswith('@ufl.edu'): #Double check for extra security
+                return JsonResponse({'error': 'Only @ufl.edu email addresses are allowed'}, status=400)
 
             if not username or not email or not password:
                 return JsonResponse({"error": "All fields are required"}, status=400)
