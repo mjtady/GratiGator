@@ -47,8 +47,9 @@ INSTALLED_APPS = [
     'journalpage',
 ]
 
+
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware', #For safe information transfer between parties
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -58,6 +59,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+#Used for allowing only logged-in users to access that accounts journal data
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
@@ -67,9 +69,10 @@ REST_FRAMEWORK = {
     ]
 }
 
-
+#Base url
 ROOT_URLCONF = 'GratiGator.urls'
 
+#Describes the Django templates we built on
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -163,10 +166,10 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # Allow local React development
     "https://heartfelt-kindness.up.railway.app", # Allow production frontend
-    "http://127.0.0.1:8000",
+    "http://127.0.0.1:8000", # This one is used mainly
     "http://127.0.0.1:3000",
 ]
-CORS_ALLOW_HEADERS = ['*']
+CORS_ALLOW_HEADERS = ['*'] # Avoid CORS Issues
 
 CORS_ALLOW_CREDENTIALS = True
 

@@ -85,6 +85,7 @@ def verify_verification_code(request):
 def register_user(request):
     if request.method == 'POST':
         try:
+            # Here we get and double check credentials and details before registering by creating a new profile
             data = json.loads(request.body)
             username = data.get('username')
             email = data.get('email')
